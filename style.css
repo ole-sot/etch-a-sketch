@@ -1,0 +1,10 @@
+body {
+    margin: 0;
+    background-color: darkgrey;
+}
+
+.frame {
+    background-color: white;
+    display: flex;
+    justify-content: center;
+}
