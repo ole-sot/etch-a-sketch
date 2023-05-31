@@ -4,7 +4,14 @@ body {
 }
 
 .frame {
+    margin: 2em;
     background-color: white;
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
+}
+
+.square {
+    min-width: var(--sqSize);
+    min-height: var(--sqSize);
 }
