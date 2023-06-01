@@ -3,7 +3,7 @@ body {
     background-color: darkgrey;
 }
 
-.frame {
+.canvas {
     margin: 2em;
     background-color: white;
     display: flex;
