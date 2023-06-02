@@ -20,11 +20,27 @@ function drawCanvas(squaresPerSide) {
 
     const pixels = document.querySelectorAll('.square');
 
+    let alpha = 0.1;
+    function getRandomRGB() {
+        const r = Math.floor((Math.random() * 1000)/4);
+        const g = Math.floor((Math.random() * 1000)/4);
+        const b = Math.floor((Math.random() * 1000)/4);
+        return `rgb(${r} ${g} ${b} / ${alpha})`;
+    }
+    let color = getRandomRGB();
+    
     function changeColor(pixel) {
-        pixel.addEventListener('mouseenter', e => e.target.style.setProperty('background-color', 'black'));
+        pixel.addEventListener('mouseenter', e => {
+            if (alpha < 1) {
+                alpha += 0.01;
+                alpha = Math.round(alpha*100)/100
+            };
+            color = color.replace(color.slice(color.search('/')), `/ ${alpha})`);
+            e.target.style.setProperty('background-color', color)
+        });
     }
 
-    pixels.forEach(e => changeColor(e));
+    pixels.forEach(pixel => changeColor(pixel));
 }
 function removeCanvas() {
     while (canvas.childElementCount > 0) {
