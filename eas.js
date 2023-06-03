@@ -14,29 +14,14 @@ function drawCanvas(squaresPerSide) {
         square.setAttribute('class', 'square');
         square.setAttribute('id', `sq${i}`);
         square.style.setProperty('--sqSize', `${sqSize}px`);
-        // square.textContent = `#${i}`;
         canvas.appendChild(square);
     };
 
     const pixels = document.querySelectorAll('.square');
 
-    let alpha = 0.1;
-    function getRandomRGB() {
-        const r = Math.floor((Math.random() * 1000)/4);
-        const g = Math.floor((Math.random() * 1000)/4);
-        const b = Math.floor((Math.random() * 1000)/4);
-        return `rgb(${r} ${g} ${b} / ${alpha})`;
-    }
-    let color = getRandomRGB();
-    
     function changeColor(pixel) {
         pixel.addEventListener('mouseenter', e => {
-            if (alpha < 1) {
-                alpha += 0.01;
-                alpha = Math.round(alpha*100)/100
-            };
-            color = color.replace(color.slice(color.search('/')), `/ ${alpha})`);
-            e.target.style.setProperty('background-color', color)
+            e.target.style.setProperty('background-color', 'black');
         });
     }
 
