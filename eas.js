@@ -17,40 +17,51 @@ function drawCanvas(squaresPerSide) {
         canvas.appendChild(square);
     };
 }
-function startDrawing(alpha) {
+function removeCanvas() {
+    while (canvas.childElementCount > 0) {
+        canvas.lastChild.remove();
+    };
+}
+function setColorWithOpacity(alpha) {
+    alpha /= 10;
     const pixels = document.querySelectorAll('.square');
     let color = `rgb(0 0 0 / ${alpha})`;
     
     function changeColor(pixel) {
-        pixel.addEventListener('mouseenter', e => {
+        pixel.addEventListener('mouseout', e => {
             e.target.style.setProperty('background-color', color);
         });
     }
     
     pixels.forEach(pixel => changeColor(pixel));
 }
+function startDrawing() {
+    const pixels = document.querySelectorAll('.square');
+    function pickAlpha(pixel) {
+        pixel.addEventListener('mouseenter', e => {
+            function findCurrentAlpha() {
+                const bgColor = e.target.style.getPropertyValue('background-color');
 
-function removeCanvas() {
-    while (canvas.childElementCount > 0) {
-        canvas.lastChild.remove();
-    };
+                if (bgColor.includes('rgb(0, 0, 0)')) {
+                    return 10;
+                } else {
+                    return +bgColor.slice(bgColor.indexOf(',') + 8, bgColor.indexOf(')')) * 10;
+                };
+            }
+            
+            alpha = findCurrentAlpha();
+            if (alpha < 10) {
+                alpha++;
+                setColorWithOpacity(alpha);
+            } else setColorWithOpacity(10);
+        });
+    }
+    
+    pixels.forEach(pixel => pickAlpha(pixel));
 }
 
 drawCanvas(squaresPerSide);
-
-function waitforme(millisec) {
-    return new Promise(resolve => {
-        setTimeout(() => { resolve('') }, millisec);
-    });
-}
-async function aDrawing() {
-    for (let alpha = 1; alpha <= 10; alpha++) {
-        await waitforme(1000);
-        startDrawing(alpha / 10);
-    };
-}
-
-aDrawing();
+startDrawing();
 
 const setCanvasButton = document.querySelector('#set-canvas');
 setCanvasButton.addEventListener('click', () => {
@@ -58,6 +69,6 @@ setCanvasButton.addEventListener('click', () => {
     if (16 <= squaresPerSide && squaresPerSide <= 100) {
         removeCanvas();
         drawCanvas(squaresPerSide);
-        aDrawing();
+        startDrawing();
     } else alert('Number of squares shold be between 16 and 100.');
 });
