@@ -14,41 +14,54 @@ function drawCanvas(squaresPerSide) {
         square.setAttribute('class', 'square');
         square.setAttribute('id', `sq${i}`);
         square.style.setProperty('--sqSize', `${sqSize}px`);
-        // square.textContent = `#${i}`;
         canvas.appendChild(square);
     };
-
-    const pixels = document.querySelectorAll('.square');
-
-    let alpha = 0.1;
-    function getRandomRGB() {
-        const r = Math.floor((Math.random() * 1000)/4);
-        const g = Math.floor((Math.random() * 1000)/4);
-        const b = Math.floor((Math.random() * 1000)/4);
-        return `rgb(${r} ${g} ${b} / ${alpha})`;
-    }
-    let color = getRandomRGB();
-    
-    function changeColor(pixel) {
-        pixel.addEventListener('mouseenter', e => {
-            if (alpha < 1) {
-                alpha += 0.01;
-                alpha = Math.round(alpha*100)/100
-            };
-            color = color.replace(color.slice(color.search('/')), `/ ${alpha})`);
-            e.target.style.setProperty('background-color', color)
-        });
-    }
-
-    pixels.forEach(pixel => changeColor(pixel));
 }
 function removeCanvas() {
     while (canvas.childElementCount > 0) {
         canvas.lastChild.remove();
     };
 }
+function setColorWithOpacity(alpha) {
+    alpha /= 10;
+    const pixels = document.querySelectorAll('.square');
+    let color = `rgb(0 0 0 / ${alpha})`;
+    
+    function changeColor(pixel) {
+        pixel.addEventListener('mouseout', e => {
+            e.target.style.setProperty('background-color', color);
+        });
+    }
+    
+    pixels.forEach(pixel => changeColor(pixel));
+}
+function startDrawing() {
+    const pixels = document.querySelectorAll('.square');
+    function pickAlpha(pixel) {
+        pixel.addEventListener('mouseenter', e => {
+            function findCurrentAlpha() {
+                const bgColor = e.target.style.getPropertyValue('background-color');
+
+                if (bgColor.includes('rgb(0, 0, 0)')) {
+                    return 10;
+                } else {
+                    return +bgColor.slice(bgColor.indexOf(',') + 8, bgColor.indexOf(')')) * 10;
+                };
+            }
+            
+            alpha = findCurrentAlpha();
+            if (alpha < 10) {
+                alpha++;
+                setColorWithOpacity(alpha);
+            } else setColorWithOpacity(10);
+        });
+    }
+    
+    pixels.forEach(pixel => pickAlpha(pixel));
+}
 
 drawCanvas(squaresPerSide);
+startDrawing();
 
 const setCanvasButton = document.querySelector('#set-canvas');
 setCanvasButton.addEventListener('click', () => {
@@ -56,5 +69,6 @@ setCanvasButton.addEventListener('click', () => {
     if (16 <= squaresPerSide && squaresPerSide <= 100) {
         removeCanvas();
         drawCanvas(squaresPerSide);
+        startDrawing();
     } else alert('Number of squares shold be between 16 and 100.');
 });
