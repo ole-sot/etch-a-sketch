@@ -37,25 +37,48 @@ function setColorWithOpacity(alpha) {
 }
 function startDrawing() {
     const pixels = document.querySelectorAll('.square');
+    // function pickAlpha(pixel) {
+    //     pixel.addEventListener('mouseenter', e => {
+    //         function findCurrentAlpha() {
+    //             const bgColor = e.target.style.getPropertyValue('background-color');
+
+    //             if (bgColor.includes('rgb(0, 0, 0)')) {
+    //                 return 10;
+    //             } else {
+    //                 return +bgColor.slice(bgColor.indexOf(',') + 8, bgColor.indexOf(')')) * 10;
+    //             };
+    //         }
+            
+    //         alpha = findCurrentAlpha();
+    //         if (alpha < 10) {
+    //             alpha++;
+    //             setColorWithOpacity(alpha);
+    //         } else setColorWithOpacity(10);
+    //     });
+    // }
+    let alpha = 1;
     function pickAlpha(pixel) {
         pixel.addEventListener('mouseenter', e => {
-            function findCurrentAlpha() {
-                const bgColor = e.target.style.getPropertyValue('background-color');
-
-                if (bgColor.includes('rgb(0, 0, 0)')) {
-                    return 10;
-                } else {
-                    return +bgColor.slice(bgColor.indexOf(',') + 8, bgColor.indexOf(')')) * 10;
-                };
+          const bgColor = e.target.style.getPropertyValue('background-color');
+          let currentAlpha = 0;
+      
+          if (bgColor.includes('rgb(0, 0, 0)')) {
+            currentAlpha = 10;
+          } else {
+            const matches = bgColor.match(/\d+/);
+            if (matches !== null) {
+              currentAlpha = Number(matches[0]) * 10;
             }
-            
-            alpha = findCurrentAlpha();
-            if (alpha < 10) {
-                alpha++;
-                setColorWithOpacity(alpha);
-            } else setColorWithOpacity(10);
+          }
+      
+          if (currentAlpha < 10) {
+            alpha++;
+            setColorWithOpacity(alpha);
+          } else {
+            setColorWithOpacity(10);
+          }
         });
-    }
+      }
     
     pixels.forEach(pixel => pickAlpha(pixel));
 }
