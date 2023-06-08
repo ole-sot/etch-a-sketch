@@ -14,4 +14,6 @@ body {
 .square {
     min-width: var(--sqSize);
     min-height: var(--sqSize);
+    background-color: black;
+    opacity: 0;
 }
